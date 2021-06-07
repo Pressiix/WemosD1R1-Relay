@@ -7,8 +7,8 @@ LiquidCrystal_I2C lcd(0x27,16,2);
 #include <MicroGear.h>
 
 #define APPID   "NETPIE2RELAY"
-#define KEY     "0xoSHpipDcGlkZT"
-#define SECRET  "ygfA2idGUqYtU1lJkd6xrRp9c"
+#define KEY     "{KEY}"
+#define SECRET  "{SECRET}"
 #define ALIAS   "Relay" 
 
 #define RELAY_PIN1 D2
@@ -16,8 +16,8 @@ LiquidCrystal_I2C lcd(0x27,16,2);
 
 WiFiClient client;
 MicroGear microgear(client);
-const char* ssid = "TOTWIFI_2.4G"; 
-const char* password = "036389356"; 
+const char* ssid = "{SSID}"; 
+const char* password = "{PASSWORD}"; 
 const char* wifi_Check_status = "";
 long timer = 0;
 const char* check_relay_status = "4";
@@ -147,19 +147,19 @@ void loop() {
                 }    
               }   
          }
-      if(WiFi.status() != WL_CONNECTED)
+      if(WiFi.status() != WL_CONNECTED) //ถ้าหลุดจากการเชื่อมต่อ WiFi ให้รีเลย์หยุดจ่ายไฟ เนื่องจากไม่สามารถควบคุมผ่านแอปพลิเคชันจากระยะไกลได้
       {
         if(!wifi_Check_status || wifi_Check_status == "connect")
         {
           wifi_Check_status = "lost";
-          digitalWrite(RELAY_PIN1, LOW);
-          digitalWrite(RELAY_PIN2, LOW);
-          check_relay_status = "4";
-          lcd.clear();
-          lcd.print("Switch 1 : OFF");
-          lcd.setCursor(0, 1);
+          digitalWrite(RELAY_PIN1, LOW); //รีเลย์ 1 เป็นประเภท Active High เมื่อสั่งปิดต้องเซ็ตค่าเป็น LOW (HIGH = Active / LOW = Inactive)
+          digitalWrite(RELAY_PIN2, LOW); //รีเลย์ 2 เป็นประเภท Active High เมื่อสั่งปิดต้องเซ็ตค่าเป็น LOW (HIGH = Active / LOW = Inactive)
+          check_relay_status = "4";  // ค่า status id เลข4 หมายถึงรีเลย์ทั้งหมดมีสถานะ Inactive
+          lcd.clear();  // เคลียร์การแสดงผลบนจอ lcd
+          lcd.print("Switch 1 : OFF"); // print ข้อความที่จอ lcd
+          lcd.setCursor(0, 1); // print ข้อความที่ lcd บรรทัดที่ 1 เริ่มต้นที่ช่องตัวอักษรที่ 0
           lcd.print("Switch 2 : OFF");
-          lcd.setCursor(0, 2);
+          lcd.setCursor(0, 2); // print ข้อความที่ lcd บรรทัดที่ 2 เริ่มต้นที่ช่องตัวอักษรที่ 0
           reconnected = "1"; 
         }
       }
@@ -179,7 +179,7 @@ void loop() {
     {
         reconnect = true;
     }
-    else if (!microgear.connected() && reconnect) 
+    else if (!microgear.connected() && reconnect) //เชื่อมต่อ API ไม่ได้ ให้ reconnect ใหม่
     {
         digitalWrite(RELAY_PIN1, LOW);
         digitalWrite(RELAY_PIN2, LOW);
